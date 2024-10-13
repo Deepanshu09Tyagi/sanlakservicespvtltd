@@ -77,7 +77,7 @@ const getAllUsers = async (req, res) => {
 
 const updateUserRole = async (req, res) => {
     const { id } = req.params; // Get the user ID from URL params
-    const { role } = req.body; // Get the new role from the request body
+    const { role, name, email, password } = req.body; // Get the new role from the request body
     const adminId = req.user.userId; // Get the ID of the currently logged-in admin
 
     try {
@@ -92,8 +92,29 @@ const updateUserRole = async (req, res) => {
             return res.status(404).json({ error: 'User not found.' });
         }
 
-        // Update the user's role
-        user.role = role;
+        if (email) {
+            const emailExists = await User.findOne({email});  // Check for any other user with the same email
+            if (emailExists) {
+                return res.status(400).json({ error: 'Email already in use by another user.' });
+            }
+            user.email = email; // Update email if it's unique
+        }
+
+        // Update the name if provided
+        if (name) {
+            user.name = name;
+        }
+        if (role) {
+            user.role = role;
+        }
+
+        // Update the password if provided and hash it
+        if (password) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            user.password = hashedPassword;
+        }
+
+        // Save the updated user details
         await user.save();
 
         res.status(200).json({ message: 'User role updated successfully.', user });
