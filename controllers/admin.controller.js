@@ -39,7 +39,7 @@ const createUserByAdmin = async (req, res) => {
 }
 
 const getAllUsers = async (req, res) => {
-    const { page = 1, role } = req.query;  // Default to page 1 if no page is provided
+    const { page = 1, role, name, email } = req.query;  // Default to page 1 if no page is provided
     const limit = 10;  // Limit of users per page
     if (page < 1) {
         return res.status(400).json({ error: 'Page parameters are incorrect!' });
@@ -49,7 +49,13 @@ const getAllUsers = async (req, res) => {
         // Build the query for filtering by role if provided
         const query = {};
         if (role) {
-            query.role = role;  // If role is specified, add it to the query
+            query.role = role;  
+        }
+        if (name) {
+            query.name = name; 
+        }
+        if (email) {
+            query.email = email; 
         }
 
         // Fetch users from the database with pagination and filtering

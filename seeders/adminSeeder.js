@@ -1,6 +1,6 @@
 const User = require("../models/userModel.js");
 
-const seedAdmin = async (req, res) => {
+const seedAdmin = async () => {
     try {
         const getUserCounts = await User.countDocuments();
         if (!getUserCounts) {
