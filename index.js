@@ -8,7 +8,8 @@ const Port = process.env.PORT || 4545;
 const userRoutes = require('./routes/userRoutes.js');
 const adminRoutes = require('./routes/adminRoutes.js');
 const { getRecentUsers } = require('./services/userData.js');
-const { requestLogger } = require('./middleware/logger.js')
+const { requestLogger } = require('./middleware/logger.js');
+const { seedAdmin } = require("./seeders/adminSeeder.js")
 
 dotenv.config();
 app.use(express.json());
@@ -19,8 +20,9 @@ app.use('/api/admin', adminRoutes);
 
 
 try {
-    mongoose.connect(process.env.MONGODB_URL).then(() => {
-        console.log("Mongodb connected...")
+    mongoose.connect(process.env.MONGODB_URL).then(async () => {
+        console.log("Mongodb connected...");
+        await seedAdmin();
         getRecentUsers().then(users => {
             if (!users.length) {
                 console.log('No User registered in the last 7 days:', users.length);
