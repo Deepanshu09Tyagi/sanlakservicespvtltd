@@ -12,6 +12,7 @@ const seedAdmin = async (req, res) => {
             });
             // Save the user to the database
             await newUser.save();
+            console.log("Super Admin Seeded successfully!")
         }
     } catch (error) {
         console.log(error)
