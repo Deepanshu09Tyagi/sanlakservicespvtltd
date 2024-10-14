@@ -1,5 +1,4 @@
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken')
 
 const User = require('../models/userModel');
 
@@ -9,6 +8,9 @@ const createUserByAdmin = async (req, res) => {
     // Validate input fields
     if (!name || !email || !password) {
         return res.status(400).json({ error: 'Name, email, and password are required' });
+    }
+    if (role != 'user' && role != 'admin') {
+        return res.status(400).json({ error: "Role can only be either 'user' or 'admin'" });
     }
 
     try {
@@ -38,7 +40,7 @@ const createUserByAdmin = async (req, res) => {
 
 const getAllUsers = async (req, res) => {
     const { page = 1, role } = req.query;  // Default to page 1 if no page is provided
-    const limit = 2;  // Limit of users per page
+    const limit = 10;  // Limit of users per page
     if (page < 1) {
         return res.status(400).json({ error: 'Page parameters are incorrect!' });
     }
@@ -86,6 +88,10 @@ const updateUserRole = async (req, res) => {
             return res.status(403).json({ error: 'You cannot change your own role.' });
         }
 
+        if (role != 'user' && role != 'admin') {
+            return res.status(400).json({ error: "Role can only be either 'user' or 'admin'" });
+        }
+
         // Find the user to update
         const user = await User.findById(id);
         if (!user) {
@@ -93,9 +99,9 @@ const updateUserRole = async (req, res) => {
         }
 
         if (email) {
-            const emailExists = await User.findOne({email});  // Check for any other user with the same email
+            const emailExists = await User.findOne({ email });  // Check for any other user with the same email
             if (emailExists) {
-                return res.status(400).json({ error: 'Email already in use by another user.' });
+                return res.status(400).json({ error: 'Email is already in use.' });
             }
             user.email = email; // Update email if it's unique
         }

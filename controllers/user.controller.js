@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const JWT_SECRET_KEY = 'SAN_LAK_SERVICES';
 
 const User = require('../models/userModel');
 
@@ -30,7 +31,8 @@ const userRegister = async (req, res) => {
         await newUser.save();
         res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
-
+        console.log(error)
+        res.status(500).json({ error: 'Server error' });
     }
 }
 
@@ -55,7 +57,7 @@ const userLogin = async (req, res) => {
         }
 
         // Create a JWT token
-        const token = jwt.sign({ userId: user._id }, "JWT_SECRET", { expiresIn: '1h' });
+        const token = jwt.sign({ userId: user._id }, JWT_SECRET_KEY, { expiresIn: '1h' });
 
         // Send the token to the user
         res.status(200).json({ message: 'Login successful', token });
