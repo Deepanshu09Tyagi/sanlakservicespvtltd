@@ -6,7 +6,6 @@ const requestLogger = (req, res, next) => {
 
     // Log the details
     console.log(`[${currentTime}] ${method} ${endpoint}`);
-    console.log(service)
     // Pass control to the next middleware or route
     next();
 };

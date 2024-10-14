@@ -13,7 +13,8 @@ const userAuth = async (req, res, next) => {
         const decoded = jwt.verify(token, JWT_SECRET_KEY);
         req.user = decoded;  // Attach user ID to the request object
         next();  // Continue to the next middleware or route handler
-    } catch (err) {
+    } catch (error) {
+        console.log(error);
         res.status(400).json({ error: 'Invalid token' });
     }
 }
@@ -37,7 +38,8 @@ const adminAuth = async (req, res, next) => {
         }
 
         next();  // If the user is an admin, proceed to the next middleware/route handler
-    } catch (err) {
+    } catch (error) {
+        console.log(error)
         res.status(400).json({ error: 'Invalid token' });
     }
 };
